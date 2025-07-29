@@ -1,18 +1,20 @@
 .label {
   margin: auto;
-  display: block;
+  display: flex;
   margin-top: 10vh;
   width: 40vw;
   height: 5vh;
   border-radius: 30px;
   background-color: white;
   outline: 2px solid lightpink;
+  box-shadow: 5px 5px 5px lightpink;
 }
 .search-input {
   margin: auto;
-  display: block;
+  display: inline-block;
   width: 35vw;
   height: 5vh;
+  padding-left: 20px;
   background-color: transparent;
   font-family: sans-serif;
   font-size: medium;
@@ -20,7 +22,21 @@
   border: none;
   box-shadow: none;
 }
-
+.button {
+  display: inline-block;
+  margin-top: 0.5vh;
+  margin-right: 0.5vw;
+  width: 9vw;
+  height: 4vh;
+  border-radius: 30px;
+  background-color: lightpink;
+  color: white;
+  outline: none;
+  border: none;
+  box-shadow: none;
+  font-family: sans-serif;
+  font-size: medium;
+}
 .search-input:focus {
   background-color: transparent;
   outline: none;

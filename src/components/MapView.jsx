@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, useMap, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import PropTypes from "prop-types";
 
 function SetViewOnLocation({ position }) {
@@ -16,23 +16,7 @@ function SetViewOnLocation({ position }) {
 }
 SetViewOnLocation.propTypes = { position: PropTypes.object.isRequired };
 
-function MapView() {
-  //Warsaw as a default
-  const [position, setPosition] = useState([52.2297, 21.0122]);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        setPosition([latitude, longitude]);
-      },
-      (error) => {
-        console.error("Geolocation error:", error);
-      },
-    );
-  }, []);
-
+function MapView({position}) {
   return (
     <MapContainer
       center={position}
@@ -44,9 +28,12 @@ function MapView() {
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       />
       <SetViewOnLocation position={position} />
-      <Marker position={position}></Marker>
+      <Marker position={position} ></Marker>
     </MapContainer>
   );
 }
+MapView.propTypes = {
+  position: PropTypes.arrayOf(PropTypes.number).isRequired,
+};
 
 export default MapView;
