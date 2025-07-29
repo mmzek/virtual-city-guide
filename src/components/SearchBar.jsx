@@ -21,7 +21,7 @@ function SearchBar({ setPosition }) {
         setPosition([lat, lon]); 
         console.log("Found:", lat, lon);
       } else {
-        console.log("Loction not found");
+        alert("Loction not found");
       }
     } catch (err) {
       console.error("Qeury error:", err);
