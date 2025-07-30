@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import LoadingBar from "react-top-loading-bar";
 import "./SearchBar.css";
 import "./MapView.jsx"
 
-
 function SearchBar({ setPosition }) {
   const [query, setQuery] = useState("");
+  const loadingBarRef = useRef(null);
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    loadingBarRef.current.continuousStart();
+
     const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(
       query
     )}&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
@@ -26,9 +29,12 @@ function SearchBar({ setPosition }) {
     } catch (err) {
       console.error("Qeury error:", err);
     }
+    loadingBarRef.current.complete();
   };
   return (
     <div>
+       <LoadingBar color="lightpink" ref={loadingBarRef} />
+    <header className="header">Virtual City Guide</header>
     <form>
       <label className="label">
         <input

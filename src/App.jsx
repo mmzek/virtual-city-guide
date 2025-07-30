@@ -2,6 +2,7 @@ import MapView from "./components/MapView.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 import { useState, useEffect} from "react";
 import "./App.css";
+import WeatherForecast from "./components/WeatherForecast.jsx";
 
 function App() {
   //Warsaw as a default
@@ -23,6 +24,9 @@ function App() {
   return (
     <div className="parent">
       <MapView position={position}/>
+      <div className="nchild">
+          <WeatherForecast></WeatherForecast>
+        </div>
       <div className="child">
         <SearchBar setPosition = {setPosition}/>
       </div>
