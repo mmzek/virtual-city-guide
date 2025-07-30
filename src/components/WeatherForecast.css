@@ -1,0 +1,93 @@
+.sidebar {
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  background-color: white;
+  outline: 2px solid lightpink;
+  box-shadow: 5px 5px 5px lightpink;
+}
+.h {
+  width: 100%;
+  padding-top: 10px;
+  display: inline-block;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: xx-large;
+  color: lightpink;
+  font-weight: bold;
+}
+.h2 {
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 80px;
+  color: lightpink;
+  font-weight: bold;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin-bottom: 0;
+  margin-top: 0px;
+}
+.h3 {
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: medium;
+  color: black;
+  font-weight: bold;
+  padding-top: 0px;
+  margin-top: 4px;
+  margin-bottom: 0px;
+}
+.h4 {
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: medium;
+  color: black;
+  font-weight: bold;
+  padding-top: 0px;
+  margin-top: 6px;
+  margin-bottom: 0px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+.nodata {
+  width: 100%;
+  margin: auto;
+  margin-top: 50px;
+  color: black;
+  font-family: sans-serif;
+  font-size: medium;
+  text-align: center;
+}
+.loader {
+  margin: auto;
+  margin-top: 50px;
+  width: 60px;
+  height: 60px;
+  border: 5px solid lightpink;
+  border-bottom-color: transparent;
+  display: flex;
+  border-radius: 50%;
+  align-items: center;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

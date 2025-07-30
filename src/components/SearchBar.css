@@ -1,7 +1,21 @@
+.header {
+  margin-top: 4vh;
+  color: white;
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 50px;
+  text-shadow:
+    4px 4px 4px rgb(251, 150, 165),
+    0 0 30px rgb(250, 0, 0),
+    -2px 0 lightpink,
+    0 2px lightpink,
+    2px 0 lightpink,
+    0 -2px lightpink;
+}
 .label {
   margin: auto;
   display: flex;
-  margin-top: 10vh;
+  margin-top: 2vh;
   width: 30vw;
   height: 5vh;
   border-radius: 30px;
@@ -39,7 +53,7 @@
   transition-duration: 0.4s;
 }
 .button:hover {
-  background-color: rgb(251, 150, 165); 
+  background-color: rgb(251, 150, 165);
 }
 .search-input:focus {
   background-color: transparent;

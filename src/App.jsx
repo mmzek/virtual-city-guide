@@ -1,7 +1,8 @@
 import MapView from "./components/MapView.jsx";
 import SearchBar from "./components/SearchBar.jsx";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
+import WeatherForecast from "./components/WeatherForecast.jsx";
 
 function App() {
   //Warsaw as a default
@@ -19,12 +20,14 @@ function App() {
       },
     );
   }, []);
-
   return (
     <div className="parent">
-      <MapView position={position}/>
+      <MapView position={position} />
+      <div className="nchild">
+        <WeatherForecast position={position}></WeatherForecast>
+      </div>
       <div className="child">
-        <SearchBar setPosition = {setPosition}/>
+        <SearchBar setPosition={setPosition} />
       </div>
     </div>
   );
