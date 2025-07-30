@@ -19,7 +19,7 @@
   height: 98vh;
   z-index: 1000;
   transition: transform 0.3s ease;
-  transform: translateX(0); 
+  transform: translateX(0);
 }
 .nchild.collapsed {
   transform: translateX(100%);
