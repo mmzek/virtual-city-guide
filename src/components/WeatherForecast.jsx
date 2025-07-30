@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 function WeatherForecast({ position }) {
   const [lat, lon] = position;
   const [weather, setWeather] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [noData, setNoData] = useState(false);
 
   useEffect(() => {
     console.log("Position changed: " + position);
@@ -12,6 +14,7 @@ function WeatherForecast({ position }) {
   }, [position]);
 
   const getWeather = async () => {
+    setLoading(true);
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=fc090af6fb0559e067b747bd7a6f1372`;
     try {
       const response = await fetch(url);
@@ -19,6 +22,7 @@ function WeatherForecast({ position }) {
 
       if (!response.ok) {
         console.error("Failed to fetch", response);
+        setNoData(true);
         return null;
       }
 
@@ -40,36 +44,47 @@ function WeatherForecast({ position }) {
       setWeather(weather);
     } catch (err) {
       console.error("Qeury error:", err);
+      setNoData(true);
     }
+    setLoading(false);
+    setNoData(false);
   };
 
   return (
     <div className="sidebar">
       <h1 className="h">Weather</h1>
-      <div className="row">
-        <div className="column">
-          <div className="row">
-            <h2 className="h2">{weather.temp}</h2>
-            <img src={weather.iconUrl} />
+      {loading && <div className="loader"></div>}
+      {noData && (
+        <div className="nodata">
+          Weather is unavailable for the specified location
+        </div>
+      )}
+      {!loading && !noData && (
+        <div className="row">
+          <div className="column">
+            <div className="row">
+              <h2 className="h2">{weather.temp}</h2>
+              <img src={weather.iconUrl} />
+            </div>
+            <div className="column" style={{ alignItems: "center" }}>
+              <h3 className="h3">{weather.feelsLike}</h3>
+              <h3 className="h3">{weather.time}</h3>
+            </div>
           </div>
-          <div className="column" style={{ alignItems: "center" }}>
-            <h3 className="h3">{weather.feelsLike}</h3>
-            <h3 className="h3">{weather.time}</h3>
+          <div className="column">
+            <h4
+              className="h4"
+              style={{ color: "lightpink", fontSize: "large", marginTop: 20 }}
+            >
+              {weather.description}
+            </h4>
+            <h4 className="h4">{weather.wind}</h4>
+            <h4 className="h4">{weather.humidity}</h4>
+            <h4 className="h4">{weather.pressure}</h4>
+            <h4 className="h4">{weather.cloudCover}</h4>
           </div>
         </div>
-        <div className="column">
-          <h4
-            className="h4"
-            style={{ color: "lightpink", fontSize: "large", marginTop: 20 }}
-          >
-            {weather.description}
-          </h4>
-          <h4 className="h4">{weather.wind}</h4>
-          <h4 className="h4">{weather.humidity}</h4>
-          <h4 className="h4">{weather.pressure}</h4>
-          <h4 className="h4">{weather.cloudCover}</h4>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
