@@ -1,5 +1,6 @@
 import MapView from "./components/MapView.jsx";
 import SearchBar from "./components/SearchBar.jsx";
+import Attractions from "./components/Attractions.jsx";
 import { useState, useEffect } from "react";
 import "./App.css";
 import WeatherForecast from "./components/WeatherForecast.jsx";
@@ -7,6 +8,7 @@ import WeatherForecast from "./components/WeatherForecast.jsx";
 function App() {
   //Warsaw as a default
   const [position, setPosition] = useState([52.2297, 21.0122]);
+  const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -22,10 +24,16 @@ function App() {
   }, []);
   return (
     <div className="parent">
-      <MapView position={position} />
-      <div className="nchild">
+      <MapView position={position} markers={markers} />
+
+      <div className="sidebar flex flex-col overflow-auto flex-1">
         <WeatherForecast position={position}></WeatherForecast>
+        <Attractions
+          position={position}
+          onMarkersUpdate={setMarkers}
+        ></Attractions>
       </div>
+
       <div className="child">
         <SearchBar setPosition={setPosition} />
       </div>

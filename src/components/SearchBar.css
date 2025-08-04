@@ -20,7 +20,7 @@
   height: 5vh;
   border-radius: 30px;
   background-color: white;
-  outline: 2px solid lightpink;
+  outline: 2px solid #ffb6c1;
   box-shadow: 5px 5px 5px lightpink;
 }
 .search-input {
