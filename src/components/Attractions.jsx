@@ -3,11 +3,54 @@ import { useState, useEffect } from "react";
 import "./../App.css";
 import "tailwindcss";
 
-function Attractions({ position, onMarkersUpdate }) {
+function formatApiText(apiText) {
+  if (!apiText) return "";
+  if (apiText == "entertainment.museum") apiText = "Museum";
+  if (apiText == "entertainment.culture") apiText = "Culture";
+  return apiText
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function Attractions({
+  position,
+  onMarkersUpdate,
+  selectedMarker,
+  onClearSelection,
+}) {
   const [lat, lon] = position;
   const [attractions, setAttractions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
+  const [index, setIndex] = useState(null);
+  const [showCategories, setShowCategories] = useState(false);
+  const categories = [
+    "entertainment",
+    "catering",
+    "entertainment.museum",
+    "tourism",
+    "activity",
+    "entertainment.culture",
+    "leisure",
+    "national_park",
+  ];
+  let categoryName = "entertainment";
+
+  function getBack() {
+    setIndex(null);
+    getAttractions();
+    onClearSelection();
+  }
+
+  function categoriesButtonClicked() {
+    showCategories ? setShowCategories(false) : setShowCategories(true);
+  }
+
+  function categoriesChosen(i) {
+    categoryName = categories[i];
+    getAttractions();
+  }
 
   useEffect(() => {
     console.log("Position changed: " + position);
@@ -16,7 +59,7 @@ function Attractions({ position, onMarkersUpdate }) {
 
   const getAttractions = async () => {
     setLoading(true);
-    const url = `https://api.geoapify.com/v2/places?categories=building.entertainment&filter=circle:${lon},${lat},5000&bias=proximity:${lon},${lat}&limit=20&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
+    const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},5000&bias=proximity:${lon},${lat}&limit=20&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
     console.log(url);
     try {
       const response = await fetch(url);
@@ -32,6 +75,9 @@ function Attractions({ position, onMarkersUpdate }) {
         name: feature.properties.name,
         attractionLon: feature.geometry.coordinates[0],
         attractionLat: feature.geometry.coordinates[1],
+        amenity: formatApiText(feature.properties.datasource.raw.amenity),
+        address: feature.properties.formatted,
+        url: feature.properties.datasource.raw.website,
       }));
 
       setAttractions(attractions);
@@ -48,23 +94,109 @@ function Attractions({ position, onMarkersUpdate }) {
     setLoading(false);
     setNoData(false);
   };
+  useEffect(() => {
+    if (selectedMarker != null && attractions.length > 0) {
+      const i = attractions.findIndex(
+        (a) =>
+          Math.abs(selectedMarker.position[0] - a.attractionLat) < 1e-6 &&
+          Math.abs(selectedMarker.position[1] - a.attractionLon) < 1e-6,
+      );
+      setIndex(i);
+    }
+  }, [selectedMarker, attractions]);
+
   return (
     <div>
       <h1 className="h">Tourist Attractions</h1>
+      {!loading &&
+        !noData &&
+        selectedMarker != null &&
+        index !== -1 &&
+        index != null && (
+          <button onClick={getBack} className="z-[1000] p-5">
+            <img src="/back-arrow-icon.svg" className="h-5" />
+          </button>
+        )}
       {loading && <div className="loader"></div>}
       {noData && <div className="nodata"></div>}
-      {!loading && !noData && (
-        <ul className="grid grid-cols-none gap-5 bg-clip-border p-10 ">
-          {attractions.map((attraction, i) => (
-            <li
-              key={i}
-              className="bg-neutral-100 shadow-md rounded-xl h-15 font-sans font-bold bg-clip-border p-4"
+      {!loading && !noData && selectedMarker == null && (
+        <div>
+          <div className="flex justify-center items-center">
+            <button
+              onClick={categoriesButtonClicked}
+              className="inline-flex justify-center w-100 rounded-md bg-(--color-light-pink) px-3 py-2 text-sm font-bold text-black shadow-xs hover:bg-(--color-pink)"
             >
-              {attraction.name}
-            </li>
-          ))}{" "}
-        </ul>
+              Categories
+              {showCategories && (
+                <img src="/arrow-down.svg" className="h-5 p-1" />
+              )}
+              {!showCategories && (
+                <img src="/arrow-up.svg" className="h-5 p-1" />
+              )}
+            </button>
+          </div>
+          {!showCategories && (
+            <div className="flex justify-center items-center">
+              <ul className=" w-100 origin-top-right bg-white shadow-lg ring-1 ring-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                {categories.map((element, i) => (
+                  <li
+                    key={i}
+                    tabIndex={0}
+                    className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-400 focus:outline-hidden"
+                    onClick={() => categoriesChosen(i)}
+                  >
+                    {formatApiText(element)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {attractions.length == 0 && (
+            <div className="font-sans p-10">
+              There are no attractions in selected category!
+            </div>
+          )}
+          <ul className="grid grid-cols-none gap-5 bg-clip-border p-10 ">
+            {attractions.map((attraction, i) => (
+              <li
+                key={i}
+                className="bg-neutral-100 shadow-md rounded-xl h-20 bg-clip-border col-span-2 p-2"
+              >
+                <div className="font-sans font-bold">{attraction.name} </div>
+                <div className="font-normal font-sans ">
+                  {attraction.amenity}
+                  <div className="text-sm text-neutral-500 font-sans">
+                    {attraction.address}
+                  </div>
+                </div>
+              </li>
+            ))}{" "}
+          </ul>{" "}
+        </div>
       )}
+      {!loading &&
+        !noData &&
+        selectedMarker != null &&
+        index !== -1 &&
+        index != null && (
+          <div className="bg-neutral-100 shadow-md rounded-xl h-100 col-span-2 bg-clip-border p-10">
+            <div className="font-sans font-bold">
+              {attractions[index].name}{" "}
+            </div>
+            <div className="font-normal font-sans ">
+              {attractions[index].amenity}
+              <div className="text-sm text-neutral-500 font-sans">
+                {attractions[index].address}
+              </div>
+            </div>
+            <a
+              className="font-sans underline font-(--color-light-pink)"
+              href={attractions[index].url}
+            >
+              Check out the website here!
+            </a>
+          </div>
+        )}{" "}
     </div>
   );
 }
@@ -72,6 +204,8 @@ function Attractions({ position, onMarkersUpdate }) {
 Attractions.propTypes = {
   position: PropTypes.arrayOf(PropTypes.number).isRequired,
   onMarkersUpdate: PropTypes.func.isRequired,
+  selectedMarker: PropTypes.object,
+  onClearSelection: PropTypes.func,
 };
 
 export default Attractions;

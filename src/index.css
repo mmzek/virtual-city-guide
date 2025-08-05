@@ -7,4 +7,5 @@ body,
   height: 100%;
   width: 100%;
   --color-light-pink: #ffb6c1;
+  --color-pink: rgb(251, 150, 165);
 }
