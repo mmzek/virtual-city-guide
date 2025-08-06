@@ -1,7 +1,14 @@
-import { MapContainer, TileLayer, useMap, Marker } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  useMap,
+  Marker,
+  Tooltip,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
+import "./Attractions.jsx";
 
 function SetViewOnLocation({ position }) {
   const map = useMap();
@@ -16,7 +23,7 @@ function SetViewOnLocation({ position }) {
 }
 SetViewOnLocation.propTypes = { position: PropTypes.object.isRequired };
 
-function MapView({ position }) {
+function MapView({ position, markers, onMarkerClick }) {
   return (
     <MapContainer
       center={position}
@@ -28,12 +35,31 @@ function MapView({ position }) {
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       />
       <SetViewOnLocation position={position} />
-      <Marker position={position}></Marker>
+
+      {markers.map((marker, idx) => (
+        <Marker
+          key={idx}
+          position={marker.position}
+          title={marker.title}
+          riseOnHover={true}
+          eventHandlers={{
+            click: () => {
+              onMarkerClick(marker);
+            },
+          }}
+        >
+          <Tooltip direction="top" offset={[-15, -15]}>
+            {marker.title}
+          </Tooltip>
+        </Marker>
+      ))}
     </MapContainer>
   );
 }
 MapView.propTypes = {
   position: PropTypes.arrayOf(PropTypes.number).isRequired,
+  markers: PropTypes.array.isRequired,
+  onMarkerClick: PropTypes.func.isRequired,
 };
 
 export default MapView;

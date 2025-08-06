@@ -51,7 +51,7 @@ function WeatherForecast({ position }) {
   };
 
   return (
-    <div className="sidebar">
+    <div>
       <h1 className="h">Weather</h1>
       {loading && <div className="loader"></div>}
       {noData && (
