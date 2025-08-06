@@ -1,4 +1,5 @@
 import { useState, Fragment, useEffect } from "react";
+import { jsPDF } from "jspdf";
 import PropTypes from "prop-types";
 import "./../App.css";
 
@@ -30,15 +31,16 @@ DropArea.propTypes = {
 function Planer({ attractions, addToPlaner }) {
   const [activeCard, setActiveCard] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [deleteTask, setDeleteTask]=useState(null);
-  const array = [];
+  const [deleteTask, setDeleteTask] = useState(null);
 
   useEffect(() => {
     if (addToPlaner != null) {
       setTasks((prevTasks) => {
-        const alreadyAdded = prevTasks.some(
-          (task) => {task.name === attractions[addToPlaner].name, task.amenity ===attractions[addToPlaner].amenity, task.address ===attractions[addToPlaner].address}
-        );
+        const alreadyAdded = prevTasks.some((task) => {
+          (task.name === attractions[addToPlaner].name,
+            task.amenity === attractions[addToPlaner].amenity,
+            task.address === attractions[addToPlaner].address);
+        });
         if (alreadyAdded) return prevTasks;
         return [...prevTasks, attractions[addToPlaner]];
       });
@@ -47,12 +49,14 @@ function Planer({ attractions, addToPlaner }) {
     }
   }, [addToPlaner, attractions]);
 
-useEffect(() => {
-  if (deleteTask != null) {
-    setTasks((prevTasks) => prevTasks.filter((_, index) => index !== deleteTask));
-    setDeleteTask(null); 
-  }
-}, [deleteTask]);
+  useEffect(() => {
+    if (deleteTask != null) {
+      setTasks((prevTasks) =>
+        prevTasks.filter((_, index) => index !== deleteTask),
+      );
+      setDeleteTask(null);
+    }
+  }, [deleteTask]);
 
   const onDrop = (dropIndex) => {
     if (activeCard === null) return;
@@ -67,8 +71,31 @@ useEffect(() => {
     setTasks(updated);
     setActiveCard(null);
   };
+
+  function generatePDF(tasks) {
+    const doc = new jsPDF();
+    let y = 20;
+    const maxWidth = 180;
+
+    tasks.forEach((task, index) => {
+      const lines = [];
+      lines.push(`${index + 1}. ${task.name || "Brak nazwy"}`);
+      if (task.amenity) {
+        lines.push(`Amenity: ${task.amenity}`);
+      }
+      if (task.address) {
+        lines.push(`Address: ${task.address}`);
+      }
+      const wrapped = doc.splitTextToSize(lines, maxWidth);
+      doc.text(wrapped, 10, y);
+      y += wrapped.length * 8 + 5;
+    });
+
+    doc.save("activity_plan.pdf");
+  }
+
   return (
-    <div>
+    <div className="h-full">
       <h1 className="h">Ativity plan</h1>
       <div className="flex justify-center items-center">
         {attractions !== null && (
@@ -87,17 +114,20 @@ useEffect(() => {
                   onDragEnd={() => setActiveCard(null)}
                   className="h-30 cursor-grab border border-gray-200 shadow-lg bg-white px-4 font-sans text-gray-800 rounded-md"
                 >
-                <div className="flex items-center justify-between font-sans font-bold">{task.name} <img
-                    className="h-5 w-5 pt-1 cursor-default"
-                    src="/bin-icon.svg"
-                    onClick={()=>setDeleteTask(index)}
-                  ></img>
+                  <div className="flex items-center justify-between font-sans font-bold">
+                    {task.name}{" "}
+                    <img
+                      className="h-5 w-5 pt-1 cursor-default"
+                      src="/bin-icon.svg"
+                      onClick={() => setDeleteTask(index)}
+                    ></img>
                   </div>
-                  <div className="flex items-center justify-between">{task.amenity}<br/>{task.address}
-                  <img
-                    className="h-4 w-4"
-                    src="/drag-and-drop.svg"
-                  ></img></div>
+                  <div className="flex items-center justify-between">
+                    {task.amenity}
+                    <br />
+                    {task.address}
+                    <img className="h-4 w-4" src="/drag-and-drop.svg"></img>
+                  </div>
                 </li>
                 <DropArea onDrop={() => onDrop(index + 1)}></DropArea>{" "}
               </Fragment>
@@ -105,7 +135,11 @@ useEffect(() => {
           </ul>
         )}
       </div>
-      <div></div>
+      <img
+        className="absolute bottom-5 right-5 text-center text-black h-10"
+        src="/file-export-icon.svg"
+        onClick={() => generatePDF(tasks)}
+      ></img>
     </div>
   );
 }

@@ -174,7 +174,7 @@ function Attractions({
                   </div>{" "}
                 </div>
                 <img
-                  onClick={()=>setAddToPlaner(i)}
+                  onClick={() => setAddToPlaner(i)}
                   src="/icons-plus.svg"
                   className="h-7"
                 ></img>
