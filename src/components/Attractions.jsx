@@ -18,9 +18,11 @@ function Attractions({
   onMarkersUpdate,
   selectedMarker,
   onClearSelection,
+  attractions,
+  setAttractions,
+  setAddToPlaner,
 }) {
   const [lat, lon] = position;
-  const [attractions, setAttractions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
   const [index, setIndex] = useState(null);
@@ -160,15 +162,22 @@ function Attractions({
             {attractions.map((attraction, i) => (
               <li
                 key={i}
-                className="bg-neutral-100 shadow-md rounded-xl h-20 bg-clip-border col-span-2 p-2"
+                className="bg-neutral-100 flex items-center justify-between shadow-lg rounded-xl h-20 bg-clip-border col-span-2 p-2"
               >
-                <div className="font-sans font-bold">{attraction.name} </div>
-                <div className="font-normal font-sans ">
-                  {attraction.amenity}
-                  <div className="text-sm text-neutral-500 font-sans">
-                    {attraction.address}
-                  </div>
+                <div className="font-sans font-bold">
+                  {attraction.name}
+                  <div className="font-normal font-sans ">
+                    {attraction.amenity}
+                    <div className="text-sm text-neutral-500 font-sans">
+                      {attraction.address}
+                    </div>
+                  </div>{" "}
                 </div>
+                <img
+                  onClick={() => setAddToPlaner(i)}
+                  src="/icons-plus.svg"
+                  className="h-7"
+                ></img>
               </li>
             ))}{" "}
           </ul>{" "}
@@ -179,7 +188,7 @@ function Attractions({
         selectedMarker != null &&
         index !== -1 &&
         index != null && (
-          <div className="bg-neutral-100 shadow-md rounded-xl h-100 col-span-2 bg-clip-border p-10">
+          <div className="bg-neutral-100 shadow-lg bounded-xl h-100 col-span-2 bg-clip-border p-10">
             <div className="font-sans font-bold">
               {attractions[index].name}{" "}
             </div>
@@ -206,6 +215,9 @@ Attractions.propTypes = {
   onMarkersUpdate: PropTypes.func.isRequired,
   selectedMarker: PropTypes.object,
   onClearSelection: PropTypes.func,
+  attractions: PropTypes.arrayOf(PropTypes.any),
+  setAttractions: PropTypes.func,
+  setAddToPlaner: PropTypes.func,
 };
 
 export default Attractions;

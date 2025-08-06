@@ -1,6 +1,7 @@
 import MapView from "./components/MapView.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 import Attractions from "./components/Attractions.jsx";
+import Planer from "./components/Planer.jsx";
 import { useState, useEffect } from "react";
 import "./App.css";
 import WeatherForecast from "./components/WeatherForecast.jsx";
@@ -10,6 +11,8 @@ function App() {
   const [position, setPosition] = useState([52.2297, 21.0122]);
   const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [attractions, setAttractions] = useState([]);
+  const [addToPlaner, setAddToPlaner] = useState(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -31,10 +34,15 @@ function App() {
         markers={markers}
         onMarkerClick={setSelectedMarker}
       />
-
+      <div className="sidebar_left flex flex-col overflow-auto flex-1">
+        <Planer attractions={attractions} addToPlaner={addToPlaner}></Planer>
+      </div>
       <div className="sidebar flex flex-col overflow-auto flex-1">
         <WeatherForecast position={position}></WeatherForecast>
         <Attractions
+          setAddToPlaner={setAddToPlaner}
+          setAttractions={setAttractions}
+          attractions={attractions}
           position={position}
           onMarkersUpdate={setMarkers}
           selectedMarker={selectedMarker}
