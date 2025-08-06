@@ -11,6 +11,8 @@ function App() {
   const [position, setPosition] = useState([52.2297, 21.0122]);
   const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [attractions, setAttractions] = useState([]);
+  const [addToPlaner, setAddToPlaner] = useState(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -33,11 +35,14 @@ function App() {
         onMarkerClick={setSelectedMarker}
       />
       <div className="sidebar_left flex flex-col overflow-auto flex-1">
-        <Planer></Planer>
+        <Planer attractions={attractions} addToPlaner={addToPlaner}></Planer>
       </div>
       <div className="sidebar flex flex-col overflow-auto flex-1">
         <WeatherForecast position={position}></WeatherForecast>
         <Attractions
+          setAddToPlaner={setAddToPlaner}
+          setAttractions={setAttractions}
+          attractions={attractions}
           position={position}
           onMarkersUpdate={setMarkers}
           selectedMarker={selectedMarker}
