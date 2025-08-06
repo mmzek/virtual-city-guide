@@ -1,6 +1,7 @@
 import MapView from "./components/MapView.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 import Attractions from "./components/Attractions.jsx";
+import Planer from "./components/Planer.jsx";
 import { useState, useEffect } from "react";
 import "./App.css";
 import WeatherForecast from "./components/WeatherForecast.jsx";
@@ -31,7 +32,9 @@ function App() {
         markers={markers}
         onMarkerClick={setSelectedMarker}
       />
-
+      <div className="sidebar_left flex flex-col overflow-auto flex-1">
+        <Planer></Planer>
+      </div>
       <div className="sidebar flex flex-col overflow-auto flex-1">
         <WeatherForecast position={position}></WeatherForecast>
         <Attractions
