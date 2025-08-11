@@ -10,9 +10,15 @@ import { useEffect } from "react";
 import PropTypes from "prop-types";
 import "./Attractions.jsx";
 
+
 function SetViewOnLocation({ position }) {
   const map = useMap();
-
+  var pinkIcon = L.icon({
+    iconUrl: '/location.svg',
+    iconSize:     [38, 90],
+    iconAnchor: [20,60], 
+  })
+  L.marker(position, {icon: pinkIcon}).addTo(map);
   useEffect(() => {
     if (position) {
       map.setView(position, 13);
@@ -35,7 +41,6 @@ function MapView({ position, markers, onMarkerClick }) {
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       />
       <SetViewOnLocation position={position} />
-
       {markers.map((marker, idx) => (
         <Marker
           key={idx}

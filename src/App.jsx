@@ -44,8 +44,10 @@ function App() {
           setAttractions={setAttractions}
           attractions={attractions}
           position={position}
+
           onMarkersUpdate={setMarkers}
           selectedMarker={selectedMarker}
+           onMarkerClick={setSelectedMarker}
           onClearSelection={() => setSelectedMarker(null)}
         ></Attractions>
       </div>

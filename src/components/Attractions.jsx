@@ -126,25 +126,25 @@ function Attractions({
           <div className="flex justify-center items-center">
             <button
               onClick={categoriesButtonClicked}
-              className="inline-flex justify-center w-100 rounded-md bg-(--color-light-pink) px-3 py-2 text-sm font-bold text-black shadow-xs hover:bg-(--color-pink)"
+              className="inline-flex flex rounded-md bg-(--color-light-pink) px-3 py-2 text-sm font-bold shadow-lg hover:bg-(--color-pink)"
             >
               Categories
-              {showCategories && (
+              {!showCategories && (
                 <img src="/arrow-down.svg" className="h-5 p-1" />
               )}
-              {!showCategories && (
+              {showCategories && (
                 <img src="/arrow-up.svg" className="h-5 p-1" />
               )}
             </button>
           </div>
-          {!showCategories && (
+          {showCategories && (
             <div className="flex justify-center items-center">
-              <ul className=" w-100 origin-top-right bg-white shadow-lg ring-1 ring-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+              <ul className="bg-white shadow-lg ring-1 ring-black/5">
                 {categories.map((element, i) => (
                   <li
                     key={i}
                     tabIndex={0}
-                    className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-400 focus:outline-hidden"
+                    className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-400"
                     onClick={() => categoriesChosen(i)}
                   >
                     {formatApiText(element)}
@@ -158,8 +158,8 @@ function Attractions({
               There are no attractions in selected category!
             </div>
           )}
-          <ul className="grid grid-cols-none gap-5 bg-clip-border p-10 ">
-            {attractions.map((attraction, i) => (
+          <ul className="grid grid-cols-none gap-5 bg-clip-border p-8">
+            { attractions.map((attraction, i) => (
               <li
                 key={i}
                 className="bg-neutral-100 flex items-center justify-between shadow-lg rounded-xl h-20 bg-clip-border col-span-2 p-2"
@@ -168,9 +168,6 @@ function Attractions({
                   {attraction.name}
                   <div className="font-normal font-sans ">
                     {attraction.amenity}
-                    <div className="text-sm text-neutral-500 font-sans">
-                      {attraction.address}
-                    </div>
                   </div>{" "}
                 </div>
                 <img

@@ -18,7 +18,7 @@ const DropArea = ({ onDrop }) => {
       className={
         showDrop
           ? "inline-flex h-30 cursor-grab bg-gray-100 rounded-md my-2"
-          : "h-2 opacity-0"
+          : "h-6 opacity-0"
       }
     ></li>
   );
