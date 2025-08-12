@@ -1,10 +1,10 @@
-import MapView from "./components/MapView.jsx";
-import SearchBar from "./components/SearchBar.jsx";
-import Attractions from "./components/Attractions.jsx";
-import Planer from "./components/Planer.jsx";
+import MapView from "./components/MapView.js";
+import SearchBar from "./components/SearchBar.js";
+import Attractions from "./components/Attractions.js";
+import Planer from "./components/Planer.js";
 import { useState, useEffect } from "react";
 import "./App.css";
-import WeatherForecast from "./components/WeatherForecast.jsx";
+import WeatherForecast from "./components/WeatherForecast.tsx";
 
 function App() {
   //Warsaw as a default
@@ -40,15 +40,13 @@ function App() {
       <div className="sidebar flex flex-col overflow-auto flex-1">
         <WeatherForecast position={position}></WeatherForecast>
         <Attractions
-          setAddToPlaner={setAddToPlaner}
-          setAttractions={setAttractions}
-          attractions={attractions}
           position={position}
-
           onMarkersUpdate={setMarkers}
           selectedMarker={selectedMarker}
-           onMarkerClick={setSelectedMarker}
           onClearSelection={() => setSelectedMarker(null)}
+          attractions={attractions}
+          setAttractions={setAttractions}
+          setAddToPlaner={setAddToPlaner}
         ></Attractions>
       </div>
 

@@ -28,18 +28,30 @@ DropArea.propTypes = {
   onDrop: PropTypes.func.isRequired,
 };
 
-function Planer({ attractions, addToPlaner }) {
-  const [activeCard, setActiveCard] = useState(null);
-  const [tasks, setTasks] = useState([]);
-  const [deleteTask, setDeleteTask] = useState(null);
+type Attraction = {
+  name: string;
+  amenity: string;
+  address: string;
+};
+
+function Planer({
+  attractions,
+  addToPlaner,
+}: {
+  attractions: Attraction[];
+  addToPlaner: number | null;
+}) {
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [tasks, setTasks] = useState<Attraction[]>([]);
+  const [deleteTask, setDeleteTask] = useState<number | null>(null);
 
   useEffect(() => {
     if (addToPlaner != null) {
       setTasks((prevTasks) => {
         const alreadyAdded = prevTasks.some((task) => {
-          (task.name === attractions[addToPlaner].name,
-            task.amenity === attractions[addToPlaner].amenity,
-            task.address === attractions[addToPlaner].address);
+          task.name === attractions[addToPlaner].name &&
+            task.amenity === attractions[addToPlaner].amenity &&
+            task.address === attractions[addToPlaner].address;
         });
         if (alreadyAdded) return prevTasks;
         return [...prevTasks, attractions[addToPlaner]];
@@ -78,7 +90,7 @@ function Planer({ attractions, addToPlaner }) {
     const maxWidth = 180;
 
     tasks.forEach((task, index) => {
-      const lines = [];
+      const lines: string[] = [];
       lines.push(`${index + 1}. ${task.name || "Brak nazwy"}`);
       if (task.amenity) {
         lines.push(`Amenity: ${task.amenity}`);
@@ -86,7 +98,8 @@ function Planer({ attractions, addToPlaner }) {
       if (task.address) {
         lines.push(`Address: ${task.address}`);
       }
-      const wrapped = doc.splitTextToSize(lines, maxWidth);
+      const text = lines.join("\n");
+      const wrapped = doc.splitTextToSize(text, maxWidth);
       doc.text(wrapped, 10, y);
       y += wrapped.length * 8 + 5;
     });

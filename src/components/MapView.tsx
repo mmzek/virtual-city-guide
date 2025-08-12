@@ -6,19 +6,20 @@ import {
   Tooltip,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { LatLngExpression } from "leaflet";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 import "./Attractions.jsx";
-
+import * as L from "leaflet";
 
 function SetViewOnLocation({ position }) {
   const map = useMap();
   var pinkIcon = L.icon({
-    iconUrl: '/location.svg',
-    iconSize:     [38, 90],
-    iconAnchor: [20,60], 
-  })
-  L.marker(position, {icon: pinkIcon}).addTo(map);
+    iconUrl: "/location.svg",
+    iconSize: [38, 90],
+    iconAnchor: [20, 60],
+  });
+  L.marker(position, { icon: pinkIcon }).addTo(map);
   useEffect(() => {
     if (position) {
       map.setView(position, 13);
@@ -32,7 +33,7 @@ SetViewOnLocation.propTypes = { position: PropTypes.object.isRequired };
 function MapView({ position, markers, onMarkerClick }) {
   return (
     <MapContainer
-      center={position}
+      center={position as LatLngExpression}
       zoom={13}
       style={{ height: "100%", width: "100%" }}
     >
@@ -53,7 +54,7 @@ function MapView({ position, markers, onMarkerClick }) {
             },
           }}
         >
-          <Tooltip direction="top" offset={[-15, -15]}>
+          <Tooltip offset={[-15, -15]} permanent={false} sticky={true}>
             {marker.title}
           </Tooltip>
         </Marker>
@@ -62,7 +63,7 @@ function MapView({ position, markers, onMarkerClick }) {
   );
 }
 MapView.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number).isRequired,
+  pposition: LatLngExpression,
   markers: PropTypes.array.isRequired,
   onMarkerClick: PropTypes.func.isRequired,
 };

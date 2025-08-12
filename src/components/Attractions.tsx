@@ -126,7 +126,7 @@ function Attractions({
           <div className="flex justify-center items-center">
             <button
               onClick={categoriesButtonClicked}
-              className="inline-flex flex rounded-md bg-(--color-light-pink) px-3 py-2 text-sm font-bold shadow-lg hover:bg-(--color-pink)"
+              className="inline-flex rounded-md bg-(--color-light-pink) px-3 py-2 text-sm font-bold shadow-lg hover:bg-(--color-pink)"
             >
               Categories
               {!showCategories && (
@@ -159,7 +159,7 @@ function Attractions({
             </div>
           )}
           <ul className="grid grid-cols-none gap-5 bg-clip-border p-8">
-            { attractions.map((attraction, i) => (
+            {attractions.map((attraction, i) => (
               <li
                 key={i}
                 className="bg-neutral-100 flex items-center justify-between shadow-lg rounded-xl h-20 bg-clip-border col-span-2 p-2"

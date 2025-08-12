@@ -2,9 +2,21 @@ import "./WeatherForecast.css";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
+interface WeatherData {
+  iconUrl: string | null;
+  temp: string;
+  feelsLike: string;
+  time: string;
+  wind: string;
+  humidity: string;
+  pressure: string;
+  cloudCover: string;
+  description: string;
+}
+
 function WeatherForecast({ position }) {
   const [lat, lon] = position;
-  const [weather, setWeather] = useState({});
+  const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
 
@@ -59,12 +71,12 @@ function WeatherForecast({ position }) {
           Weather is unavailable for the specified location
         </div>
       )}
-      {!loading && !noData && (
+      {!loading && !noData && weather && (
         <div className="row">
           <div className="column">
             <div className="row">
               <h2 className="h2">{weather.temp}</h2>
-              <img src={weather.iconUrl} />
+              <img src={weather.iconUrl ?? ""} alt="weather icon" />
             </div>
             <div className="column" style={{ alignItems: "center" }}>
               <h3 className="h3">{weather.feelsLike}</h3>

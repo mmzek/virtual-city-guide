@@ -1,16 +1,16 @@
 import { useState, useRef } from "react";
 import PropTypes from "prop-types";
-import LoadingBar from "react-top-loading-bar";
 import "./SearchBar.css";
 import "./MapView.jsx";
+import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 
 function SearchBar({ setPosition }) {
+  const loadingBarRef = useRef<LoadingBarRef>(null);
   const [query, setQuery] = useState("");
-  const loadingBarRef = useRef(null);
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    loadingBarRef.current.continuousStart();
+    loadingBarRef.current?.continuousStart();
 
     const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(
       query,
@@ -30,7 +30,7 @@ function SearchBar({ setPosition }) {
     } catch (err) {
       console.error("Qeury error:", err);
     }
-    loadingBarRef.current.complete();
+    loadingBarRef.current?.complete();
   };
   return (
     <div>
