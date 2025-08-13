@@ -5,13 +5,23 @@ import Planer from "./components/Planer.js";
 import { useState, useEffect } from "react";
 import "./App.css";
 import WeatherForecast from "./components/WeatherForecast.tsx";
-
+export interface AttractionsData {
+  iconUrl: string | null;
+  temp: string;
+  feelsLike: string;
+  time: string;
+  wind: string;
+  humidity: string;
+  pressure: string;
+  cloudCover: string;
+  description: string;
+}
 function App() {
   //Warsaw as a default
   const [position, setPosition] = useState([52.2297, 21.0122]);
   const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
-  const [attractions, setAttractions] = useState([]);
+  const [attractions, setAttractions] = useState<AttractionsData | null>(null);
   const [addToPlaner, setAddToPlaner] = useState(null);
 
   useEffect(() => {
@@ -42,7 +52,9 @@ function App() {
         <Attractions
           position={position}
           onMarkersUpdate={setMarkers}
+          markers={markers}
           selectedMarker={selectedMarker}
+          setSelectedMarker={setSelectedMarker}
           onClearSelection={() => setSelectedMarker(null)}
           attractions={attractions}
           setAttractions={setAttractions}

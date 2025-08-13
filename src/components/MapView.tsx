@@ -6,7 +6,6 @@ import {
   Tooltip,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { LatLngExpression } from "leaflet";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 import "./Attractions.jsx";
@@ -28,12 +27,15 @@ function SetViewOnLocation({ position }) {
 
   return null;
 }
-SetViewOnLocation.propTypes = { position: PropTypes.object.isRequired };
+SetViewOnLocation.propTypes = {
+  position: PropTypes.arrayOf(PropTypes.number).isRequired,
+};
 
 function MapView({ position, markers, onMarkerClick }) {
+  console.log(markers);
   return (
     <MapContainer
-      center={position as LatLngExpression}
+      center={position}
       zoom={13}
       style={{ height: "100%", width: "100%" }}
     >
@@ -54,7 +56,7 @@ function MapView({ position, markers, onMarkerClick }) {
             },
           }}
         >
-          <Tooltip offset={[-15, -15]} permanent={false} sticky={true}>
+          <Tooltip direction="top" offset={[-15, -15]}>
             {marker.title}
           </Tooltip>
         </Marker>
@@ -63,7 +65,7 @@ function MapView({ position, markers, onMarkerClick }) {
   );
 }
 MapView.propTypes = {
-  pposition: LatLngExpression,
+  position: PropTypes.arrayOf(PropTypes.number).isRequired,
   markers: PropTypes.array.isRequired,
   onMarkerClick: PropTypes.func.isRequired,
 };

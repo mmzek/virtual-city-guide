@@ -1,6 +1,7 @@
 import { useState, Fragment, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import PropTypes from "prop-types";
+import { AttractionsData } from "./../App.tsx";
 import "./../App.css";
 
 const DropArea = ({ onDrop }) => {
@@ -38,7 +39,7 @@ function Planer({
   attractions,
   addToPlaner,
 }: {
-  attractions: Attraction[];
+  attractions: AttractionsData | null;
   addToPlaner: number | null;
 }) {
   const [activeCard, setActiveCard] = useState<number | null>(null);
@@ -46,7 +47,7 @@ function Planer({
   const [deleteTask, setDeleteTask] = useState<number | null>(null);
 
   useEffect(() => {
-    if (addToPlaner != null) {
+    if (addToPlaner != null && attractions) {
       setTasks((prevTasks) => {
         const alreadyAdded = prevTasks.some((task) => {
           task.name === attractions[addToPlaner].name &&
@@ -57,7 +58,6 @@ function Planer({
         return [...prevTasks, attractions[addToPlaner]];
       });
       console.log(`addToPlaner: ${addToPlaner}`);
-      console.log(`added attraction: ${attractions[addToPlaner].name}`);
     }
   }, [addToPlaner, attractions]);
 
@@ -158,7 +158,7 @@ function Planer({
 }
 
 Planer.propTypes = {
-  attractions: PropTypes.arrayOf(PropTypes.any).isRequired,
+  attractions: PropTypes.arrayOf(PropTypes.any),
   attractionIndex: PropTypes.number,
   addToPlaner: PropTypes.number,
 };

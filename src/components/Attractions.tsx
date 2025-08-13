@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import AttractionDetails from "./AttractionDetails.tsx";
 import "./../App.css";
 import "tailwindcss";
 
@@ -17,6 +18,8 @@ function Attractions({
   position,
   onMarkersUpdate,
   selectedMarker,
+  markers,
+  setSelectedMarker,
   onClearSelection,
   attractions,
   setAttractions,
@@ -39,6 +42,7 @@ function Attractions({
   ];
   let categoryName = "entertainment";
 
+  console.log(selectedMarker);
   function getBack() {
     setIndex(null);
     getAttractions();
@@ -61,7 +65,7 @@ function Attractions({
 
   const getAttractions = async () => {
     setLoading(true);
-    const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},5000&bias=proximity:${lon},${lat}&limit=20&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
+    const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},3000&bias=proximity:${lon},${lat}&limit=20&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
     console.log(url);
     try {
       const response = await fetch(url);
@@ -81,10 +85,12 @@ function Attractions({
         address: feature.properties.formatted,
         url: feature.properties.datasource.raw.website,
       }));
-
-      setAttractions(attractions);
+      const filtered = attractions.filter(
+        (attraction) => attraction.name != null && attraction.amenity != null,
+      );
+      setAttractions(filtered);
       onMarkersUpdate(
-        attractions.map((a) => ({
+        filtered.map((a) => ({
           position: [a.attractionLat, a.attractionLon],
           title: a.name,
         })),
@@ -97,7 +103,7 @@ function Attractions({
     setNoData(false);
   };
   useEffect(() => {
-    if (selectedMarker != null && attractions.length > 0) {
+    if (selectedMarker != null && attractions?.length > 0) {
       const i = attractions.findIndex(
         (a) =>
           Math.abs(selectedMarker.position[0] - a.attractionLat) < 1e-6 &&
@@ -153,16 +159,17 @@ function Attractions({
               </ul>
             </div>
           )}
-          {attractions.length == 0 && (
+          {attractions?.length == 0 && (
             <div className="font-sans p-10">
               There are no attractions in selected category!
             </div>
           )}
           <ul className="grid grid-cols-none gap-5 bg-clip-border p-8">
-            {attractions.map((attraction, i) => (
+            {attractions?.map((attraction, i) => (
               <li
                 key={i}
                 className="bg-neutral-100 flex items-center justify-between shadow-lg rounded-xl h-20 bg-clip-border col-span-2 p-2"
+                onClick={() => setSelectedMarker(markers[i])}
               >
                 <div className="font-sans font-bold">
                   {attraction.name}
@@ -185,23 +192,7 @@ function Attractions({
         selectedMarker != null &&
         index !== -1 &&
         index != null && (
-          <div className="bg-neutral-100 shadow-lg bounded-xl h-100 col-span-2 bg-clip-border p-10">
-            <div className="font-sans font-bold">
-              {attractions[index].name}{" "}
-            </div>
-            <div className="font-normal font-sans ">
-              {attractions[index].amenity}
-              <div className="text-sm text-neutral-500 font-sans">
-                {attractions[index].address}
-              </div>
-            </div>
-            <a
-              className="font-sans underline font-(--color-light-pink)"
-              href={attractions[index].url}
-            >
-              Check out the website here!
-            </a>
-          </div>
+          <AttractionDetails attractions={attractions} index={index} />
         )}{" "}
     </div>
   );
@@ -211,6 +202,8 @@ Attractions.propTypes = {
   position: PropTypes.arrayOf(PropTypes.number).isRequired,
   onMarkersUpdate: PropTypes.func.isRequired,
   selectedMarker: PropTypes.object,
+  markers: PropTypes.array.isRequired,
+  setSelectedMarker: PropTypes.func,
   onClearSelection: PropTypes.func,
   attractions: PropTypes.arrayOf(PropTypes.any),
   setAttractions: PropTypes.func,
