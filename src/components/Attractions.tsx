@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import AttractionDetails from "./AttractionDetails.tsx";
 import "./../App.css";
 import "tailwindcss";
+import { useAppContext } from "../AppContext.tsx";
+import { AttractionsData } from "../AppContext.tsx";
 
 function formatApiText(apiText) {
   if (!apiText) return "";
@@ -14,21 +16,12 @@ function formatApiText(apiText) {
     .join(" ");
 }
 
-function Attractions({
-  position,
-  onMarkersUpdate,
-  selectedMarker,
-  markers,
-  setSelectedMarker,
-  onClearSelection,
-  attractions,
-  setAttractions,
-  setAddToPlaner,
-}) {
+function Attractions({}) {
+  const {position, selectedMarker, attractions, setSelectedMarker, setAddToPlaner, markers, setAttractions, setMarkers}=useAppContext();
   const [lat, lon] = position;
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
-  const [index, setIndex] = useState(null);
+  const [index, setIndex] = useState<number | null>(null);
   const [showCategories, setShowCategories] = useState(false);
   const categories = [
     "entertainment",
@@ -46,7 +39,7 @@ function Attractions({
   function getBack() {
     setIndex(null);
     getAttractions();
-    onClearSelection();
+    setSelectedMarker(null)
   }
 
   function categoriesButtonClicked() {
@@ -65,7 +58,8 @@ function Attractions({
 
   const getAttractions = async () => {
     setLoading(true);
-    const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},3000&bias=proximity:${lon},${lat}&limit=20&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
+     const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
+    const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},3000&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`;
     console.log(url);
     try {
       const response = await fetch(url);
@@ -76,7 +70,6 @@ function Attractions({
         setNoData(true);
         return null;
       }
-
       const attractions = data.features.map((feature) => ({
         name: feature.properties.name,
         attractionLon: feature.geometry.coordinates[0],
@@ -89,7 +82,7 @@ function Attractions({
         (attraction) => attraction.name != null && attraction.amenity != null,
       );
       setAttractions(filtered);
-      onMarkersUpdate(
+      setMarkers(
         filtered.map((a) => ({
           position: [a.attractionLat, a.attractionLon],
           title: a.name,
@@ -104,7 +97,7 @@ function Attractions({
   };
   useEffect(() => {
     if (selectedMarker != null && attractions?.length > 0) {
-      const i = attractions.findIndex(
+      const i = attractions?.findIndex(
         (a) =>
           Math.abs(selectedMarker.position[0] - a.attractionLat) < 1e-6 &&
           Math.abs(selectedMarker.position[1] - a.attractionLon) < 1e-6,
@@ -165,7 +158,7 @@ function Attractions({
             </div>
           )}
           <ul className="grid grid-cols-none gap-5 bg-clip-border p-8">
-            {attractions?.map((attraction, i) => (
+            {attractions.map((attraction, i) => (
               <li
                 key={i}
                 className="bg-neutral-100 flex items-center justify-between shadow-lg rounded-xl h-20 bg-clip-border col-span-2 p-2"
@@ -178,7 +171,7 @@ function Attractions({
                   </div>{" "}
                 </div>
                 <img
-                  onClick={() => setAddToPlaner(i)}
+                  onClick={(e) =>{ e.stopPropagation(); setAddToPlaner(i);}}
                   src="/icons-plus.svg"
                   className="h-7"
                 ></img>
@@ -187,7 +180,7 @@ function Attractions({
           </ul>{" "}
         </div>
       )}
-      {!loading &&
+{!loading &&
         !noData &&
         selectedMarker != null &&
         index !== -1 &&
@@ -197,17 +190,5 @@ function Attractions({
     </div>
   );
 }
-
-Attractions.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number).isRequired,
-  onMarkersUpdate: PropTypes.func.isRequired,
-  selectedMarker: PropTypes.object,
-  markers: PropTypes.array.isRequired,
-  setSelectedMarker: PropTypes.func,
-  onClearSelection: PropTypes.func,
-  attractions: PropTypes.arrayOf(PropTypes.any),
-  setAttractions: PropTypes.func,
-  setAddToPlaner: PropTypes.func,
-};
 
 export default Attractions;

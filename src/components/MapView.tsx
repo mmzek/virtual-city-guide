@@ -10,8 +10,10 @@ import { useEffect } from "react";
 import PropTypes from "prop-types";
 import "./Attractions.jsx";
 import * as L from "leaflet";
+import { useAppContext } from "../AppContext.js";
 
-function SetViewOnLocation({ position }) {
+
+function SetViewOnLocation({ position}) {
   const map = useMap();
   var pinkIcon = L.icon({
     iconUrl: "/location.svg",
@@ -27,15 +29,13 @@ function SetViewOnLocation({ position }) {
 
   return null;
 }
-SetViewOnLocation.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number).isRequired,
-};
 
-function MapView({ position, markers, onMarkerClick }) {
+function MapView({}) {
+  const {position, markers, setSelectedMarker} = useAppContext()
   console.log(markers);
   return (
     <MapContainer
-      center={position}
+      center={position as L.LatLngExpression}
       zoom={13}
       style={{ height: "100%", width: "100%" }}
     >
@@ -52,7 +52,7 @@ function MapView({ position, markers, onMarkerClick }) {
           riseOnHover={true}
           eventHandlers={{
             click: () => {
-              onMarkerClick(marker);
+              setSelectedMarker(marker);
             },
           }}
         >
@@ -64,10 +64,5 @@ function MapView({ position, markers, onMarkerClick }) {
     </MapContainer>
   );
 }
-MapView.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number).isRequired,
-  markers: PropTypes.array.isRequired,
-  onMarkerClick: PropTypes.func.isRequired,
-};
 
 export default MapView;

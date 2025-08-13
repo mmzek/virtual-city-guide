@@ -1,8 +1,8 @@
 import { useState, Fragment, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import PropTypes from "prop-types";
-import { AttractionsData } from "./../App.tsx";
 import "./../App.css";
+import { AttractionsData, useAppContext } from "../AppContext.tsx";
 
 const DropArea = ({ onDrop }) => {
   const [showDrop, setShowDrop] = useState(false);
@@ -29,21 +29,11 @@ DropArea.propTypes = {
   onDrop: PropTypes.func.isRequired,
 };
 
-type Attraction = {
-  name: string;
-  amenity: string;
-  address: string;
-};
-
 function Planer({
-  attractions,
-  addToPlaner,
-}: {
-  attractions: AttractionsData | null;
-  addToPlaner: number | null;
 }) {
+  const {addToPlaner, attractions} = useAppContext()
   const [activeCard, setActiveCard] = useState<number | null>(null);
-  const [tasks, setTasks] = useState<Attraction[]>([]);
+  const [tasks, setTasks] = useState<AttractionsData[]>([]);
   const [deleteTask, setDeleteTask] = useState<number | null>(null);
 
   useEffect(() => {
@@ -156,11 +146,5 @@ function Planer({
     </div>
   );
 }
-
-Planer.propTypes = {
-  attractions: PropTypes.arrayOf(PropTypes.any),
-  attractionIndex: PropTypes.number,
-  addToPlaner: PropTypes.number,
-};
 
 export default Planer;
