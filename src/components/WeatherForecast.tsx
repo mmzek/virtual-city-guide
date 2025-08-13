@@ -1,10 +1,24 @@
 import "./WeatherForecast.css";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useAppContext } from "../AppContext";
 
-function WeatherForecast({ position }) {
+interface WeatherData {
+  iconUrl: string | null;
+  temp: string;
+  feelsLike: string;
+  time: string;
+  wind: string;
+  humidity: string;
+  pressure: string;
+  cloudCover: string;
+  description: string;
+}
+
+function WeatherForecast({  }) {
+  const {position }= useAppContext();
   const [lat, lon] = position;
-  const [weather, setWeather] = useState({});
+  const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
 
@@ -15,7 +29,8 @@ function WeatherForecast({ position }) {
 
   const getWeather = async () => {
     setLoading(true);
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=fc090af6fb0559e067b747bd7a6f1372`;
+    const apiKey = import.meta.env.VITE_WEATHER_KEY as string;
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${apiKey}`;
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -59,12 +74,12 @@ function WeatherForecast({ position }) {
           Weather is unavailable for the specified location
         </div>
       )}
-      {!loading && !noData && (
+      {!loading && !noData && weather && (
         <div className="row">
           <div className="column">
             <div className="row">
               <h2 className="h2">{weather.temp}</h2>
-              <img src={weather.iconUrl} />
+              <img src={weather.iconUrl ?? ""} alt="weather icon" />
             </div>
             <div className="column" style={{ alignItems: "center" }}>
               <h3 className="h3">{weather.feelsLike}</h3>
@@ -89,8 +104,5 @@ function WeatherForecast({ position }) {
   );
 }
 
-WeatherForecast.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number).isRequired,
-};
 
 export default WeatherForecast;

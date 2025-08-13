@@ -2,6 +2,7 @@ import { useState, Fragment, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import PropTypes from "prop-types";
 import "./../App.css";
+import { AttractionsData, useAppContext } from "../AppContext.tsx";
 
 const DropArea = ({ onDrop }) => {
   const [showDrop, setShowDrop] = useState(false);
@@ -18,7 +19,7 @@ const DropArea = ({ onDrop }) => {
       className={
         showDrop
           ? "inline-flex h-30 cursor-grab bg-gray-100 rounded-md my-2"
-          : "h-2 opacity-0"
+          : "h-6 opacity-0"
       }
     ></li>
   );
@@ -28,24 +29,25 @@ DropArea.propTypes = {
   onDrop: PropTypes.func.isRequired,
 };
 
-function Planer({ attractions, addToPlaner }) {
-  const [activeCard, setActiveCard] = useState(null);
-  const [tasks, setTasks] = useState([]);
-  const [deleteTask, setDeleteTask] = useState(null);
+function Planer({
+}) {
+  const {addToPlaner, attractions} = useAppContext()
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [tasks, setTasks] = useState<AttractionsData[]>([]);
+  const [deleteTask, setDeleteTask] = useState<number | null>(null);
 
   useEffect(() => {
-    if (addToPlaner != null) {
+    if (addToPlaner != null && attractions) {
       setTasks((prevTasks) => {
         const alreadyAdded = prevTasks.some((task) => {
-          (task.name === attractions[addToPlaner].name,
-            task.amenity === attractions[addToPlaner].amenity,
-            task.address === attractions[addToPlaner].address);
+          task.name === attractions[addToPlaner].name &&
+            task.amenity === attractions[addToPlaner].amenity &&
+            task.address === attractions[addToPlaner].address;
         });
         if (alreadyAdded) return prevTasks;
         return [...prevTasks, attractions[addToPlaner]];
       });
       console.log(`addToPlaner: ${addToPlaner}`);
-      console.log(`added attraction: ${attractions[addToPlaner].name}`);
     }
   }, [addToPlaner, attractions]);
 
@@ -78,7 +80,7 @@ function Planer({ attractions, addToPlaner }) {
     const maxWidth = 180;
 
     tasks.forEach((task, index) => {
-      const lines = [];
+      const lines: string[] = [];
       lines.push(`${index + 1}. ${task.name || "Brak nazwy"}`);
       if (task.amenity) {
         lines.push(`Amenity: ${task.amenity}`);
@@ -86,7 +88,8 @@ function Planer({ attractions, addToPlaner }) {
       if (task.address) {
         lines.push(`Address: ${task.address}`);
       }
-      const wrapped = doc.splitTextToSize(lines, maxWidth);
+      const text = lines.join("\n");
+      const wrapped = doc.splitTextToSize(text, maxWidth);
       doc.text(wrapped, 10, y);
       y += wrapped.length * 8 + 5;
     });
@@ -143,11 +146,5 @@ function Planer({ attractions, addToPlaner }) {
     </div>
   );
 }
-
-Planer.propTypes = {
-  attractions: PropTypes.arrayOf(PropTypes.any).isRequired,
-  attractionIndex: PropTypes.number,
-  addToPlaner: PropTypes.number,
-};
 
 export default Planer;

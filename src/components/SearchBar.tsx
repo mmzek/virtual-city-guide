@@ -1,20 +1,22 @@
 import { useState, useRef } from "react";
 import PropTypes from "prop-types";
-import LoadingBar from "react-top-loading-bar";
 import "./SearchBar.css";
 import "./MapView.jsx";
+import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
+import { useAppContext } from "../AppContext.js";
 
-function SearchBar({ setPosition }) {
+function SearchBar({  }) {
+  const {setPosition} = useAppContext();
+  const loadingBarRef = useRef<LoadingBarRef>(null);
   const [query, setQuery] = useState("");
-  const loadingBarRef = useRef(null);
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    loadingBarRef.current.continuousStart();
-
+    loadingBarRef.current?.continuousStart();
+    const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
     const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(
       query,
-    )}&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
+    )}&apiKey=${apiKey}`;
 
     try {
       const response = await fetch(url);
@@ -30,7 +32,7 @@ function SearchBar({ setPosition }) {
     } catch (err) {
       console.error("Qeury error:", err);
     }
-    loadingBarRef.current.complete();
+    loadingBarRef.current?.complete();
   };
   return (
     <div>
@@ -52,7 +54,4 @@ function SearchBar({ setPosition }) {
     </div>
   );
 }
-SearchBar.propTypes = {
-  setPosition: PropTypes.func.isRequired,
-};
 export default SearchBar;

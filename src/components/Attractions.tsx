@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import AttractionDetails from "./AttractionDetails.tsx";
 import "./../App.css";
 import "tailwindcss";
+import { useAppContext } from "../AppContext.tsx";
+import { AttractionsData } from "../AppContext.tsx";
 
 function formatApiText(apiText) {
   if (!apiText) return "";
@@ -13,19 +16,12 @@ function formatApiText(apiText) {
     .join(" ");
 }
 
-function Attractions({
-  position,
-  onMarkersUpdate,
-  selectedMarker,
-  onClearSelection,
-  attractions,
-  setAttractions,
-  setAddToPlaner,
-}) {
+function Attractions({}) {
+  const {position, selectedMarker, attractions, setSelectedMarker, setAddToPlaner, markers, setAttractions, setMarkers}=useAppContext();
   const [lat, lon] = position;
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
-  const [index, setIndex] = useState(null);
+  const [index, setIndex] = useState<number | null>(null);
   const [showCategories, setShowCategories] = useState(false);
   const categories = [
     "entertainment",
@@ -39,10 +35,11 @@ function Attractions({
   ];
   let categoryName = "entertainment";
 
+  console.log(selectedMarker);
   function getBack() {
     setIndex(null);
     getAttractions();
-    onClearSelection();
+    setSelectedMarker(null)
   }
 
   function categoriesButtonClicked() {
@@ -61,7 +58,8 @@ function Attractions({
 
   const getAttractions = async () => {
     setLoading(true);
-    const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},5000&bias=proximity:${lon},${lat}&limit=20&apiKey=52bdc0d1cd0b477aa438a932e9aee7cd`;
+     const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
+    const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},3000&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`;
     console.log(url);
     try {
       const response = await fetch(url);
@@ -72,7 +70,6 @@ function Attractions({
         setNoData(true);
         return null;
       }
-
       const attractions = data.features.map((feature) => ({
         name: feature.properties.name,
         attractionLon: feature.geometry.coordinates[0],
@@ -81,10 +78,12 @@ function Attractions({
         address: feature.properties.formatted,
         url: feature.properties.datasource.raw.website,
       }));
-
-      setAttractions(attractions);
-      onMarkersUpdate(
-        attractions.map((a) => ({
+      const filtered = attractions.filter(
+        (attraction) => attraction.name != null && attraction.amenity != null,
+      );
+      setAttractions(filtered);
+      setMarkers(
+        filtered.map((a) => ({
           position: [a.attractionLat, a.attractionLon],
           title: a.name,
         })),
@@ -97,8 +96,8 @@ function Attractions({
     setNoData(false);
   };
   useEffect(() => {
-    if (selectedMarker != null && attractions.length > 0) {
-      const i = attractions.findIndex(
+    if (selectedMarker != null && attractions?.length > 0) {
+      const i = attractions?.findIndex(
         (a) =>
           Math.abs(selectedMarker.position[0] - a.attractionLat) < 1e-6 &&
           Math.abs(selectedMarker.position[1] - a.attractionLon) < 1e-6,
@@ -126,25 +125,25 @@ function Attractions({
           <div className="flex justify-center items-center">
             <button
               onClick={categoriesButtonClicked}
-              className="inline-flex justify-center w-100 rounded-md bg-(--color-light-pink) px-3 py-2 text-sm font-bold text-black shadow-xs hover:bg-(--color-pink)"
+              className="inline-flex rounded-md bg-(--color-light-pink) px-3 py-2 text-sm font-bold shadow-lg hover:bg-(--color-pink)"
             >
               Categories
-              {showCategories && (
+              {!showCategories && (
                 <img src="/arrow-down.svg" className="h-5 p-1" />
               )}
-              {!showCategories && (
+              {showCategories && (
                 <img src="/arrow-up.svg" className="h-5 p-1" />
               )}
             </button>
           </div>
-          {!showCategories && (
+          {showCategories && (
             <div className="flex justify-center items-center">
-              <ul className=" w-100 origin-top-right bg-white shadow-lg ring-1 ring-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+              <ul className="bg-white shadow-lg ring-1 ring-black/5">
                 {categories.map((element, i) => (
                   <li
                     key={i}
                     tabIndex={0}
-                    className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-400 focus:outline-hidden"
+                    className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-400"
                     onClick={() => categoriesChosen(i)}
                   >
                     {formatApiText(element)}
@@ -153,28 +152,26 @@ function Attractions({
               </ul>
             </div>
           )}
-          {attractions.length == 0 && (
+          {attractions?.length == 0 && (
             <div className="font-sans p-10">
               There are no attractions in selected category!
             </div>
           )}
-          <ul className="grid grid-cols-none gap-5 bg-clip-border p-10 ">
+          <ul className="grid grid-cols-none gap-5 bg-clip-border p-8">
             {attractions.map((attraction, i) => (
               <li
                 key={i}
                 className="bg-neutral-100 flex items-center justify-between shadow-lg rounded-xl h-20 bg-clip-border col-span-2 p-2"
+                onClick={() => setSelectedMarker(markers[i])}
               >
                 <div className="font-sans font-bold">
                   {attraction.name}
                   <div className="font-normal font-sans ">
                     {attraction.amenity}
-                    <div className="text-sm text-neutral-500 font-sans">
-                      {attraction.address}
-                    </div>
                   </div>{" "}
                 </div>
                 <img
-                  onClick={() => setAddToPlaner(i)}
+                  onClick={(e) =>{ e.stopPropagation(); setAddToPlaner(i);}}
                   src="/icons-plus.svg"
                   className="h-7"
                 ></img>
@@ -183,41 +180,15 @@ function Attractions({
           </ul>{" "}
         </div>
       )}
-      {!loading &&
+{!loading &&
         !noData &&
         selectedMarker != null &&
         index !== -1 &&
         index != null && (
-          <div className="bg-neutral-100 shadow-lg bounded-xl h-100 col-span-2 bg-clip-border p-10">
-            <div className="font-sans font-bold">
-              {attractions[index].name}{" "}
-            </div>
-            <div className="font-normal font-sans ">
-              {attractions[index].amenity}
-              <div className="text-sm text-neutral-500 font-sans">
-                {attractions[index].address}
-              </div>
-            </div>
-            <a
-              className="font-sans underline font-(--color-light-pink)"
-              href={attractions[index].url}
-            >
-              Check out the website here!
-            </a>
-          </div>
+          <AttractionDetails attractions={attractions} index={index} />
         )}{" "}
     </div>
   );
 }
-
-Attractions.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number).isRequired,
-  onMarkersUpdate: PropTypes.func.isRequired,
-  selectedMarker: PropTypes.object,
-  onClearSelection: PropTypes.func,
-  attractions: PropTypes.arrayOf(PropTypes.any),
-  setAttractions: PropTypes.func,
-  setAddToPlaner: PropTypes.func,
-};
 
 export default Attractions;
