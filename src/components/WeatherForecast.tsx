@@ -15,15 +15,14 @@ interface WeatherData {
   description: string;
 }
 
-function WeatherForecast({  }) {
-  const {position }= useAppContext();
+function WeatherForecast({}) {
+  const { position } = useAppContext();
   const [lat, lon] = position;
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
 
   useEffect(() => {
-    console.log("Position changed: " + position);
     getWeather();
   }, [position]);
 
@@ -103,6 +102,5 @@ function WeatherForecast({  }) {
     </div>
   );
 }
-
 
 export default WeatherForecast;

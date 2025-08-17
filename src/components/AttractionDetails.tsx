@@ -20,7 +20,6 @@ function AttractionDetails({ attractions, index }) {
         console.error("Failed to fetch", result.response);
         return null;
       }
-      console.log(result.response.text());
       setDescription(result.response.text());
     } catch (err) {
       console.error("Qeury error:", err);
@@ -28,7 +27,6 @@ function AttractionDetails({ attractions, index }) {
   };
 
   useEffect(() => {
-    console.log("got i respo ");
     getAIResponse();
     setDescription(" ");
   }, [attraction]);

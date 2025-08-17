@@ -17,7 +17,16 @@ function formatApiText(apiText) {
 }
 
 function Attractions({}) {
-  const {position, selectedMarker, attractions, setSelectedMarker, setAddToPlaner, markers, setAttractions, setMarkers}=useAppContext();
+  const {
+    position,
+    selectedMarker,
+    attractions,
+    setSelectedMarker,
+    setAddToPlaner,
+    markers,
+    setAttractions,
+    setMarkers,
+  } = useAppContext();
   const [lat, lon] = position;
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
@@ -35,11 +44,10 @@ function Attractions({}) {
   ];
   let categoryName = "entertainment";
 
-  console.log(selectedMarker);
   function getBack() {
     setIndex(null);
     getAttractions();
-    setSelectedMarker(null)
+    setSelectedMarker(null);
   }
 
   function categoriesButtonClicked() {
@@ -52,15 +60,13 @@ function Attractions({}) {
   }
 
   useEffect(() => {
-    console.log("Position changed: " + position);
     getAttractions();
   }, [position]);
 
   const getAttractions = async () => {
     setLoading(true);
-     const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
+    const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
     const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},3000&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`;
-    console.log(url);
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -171,7 +177,10 @@ function Attractions({}) {
                   </div>{" "}
                 </div>
                 <img
-                  onClick={(e) =>{ e.stopPropagation(); setAddToPlaner(i);}}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAddToPlaner(i);
+                  }}
                   src="/icons-plus.svg"
                   className="h-7"
                 ></img>
@@ -180,7 +189,7 @@ function Attractions({}) {
           </ul>{" "}
         </div>
       )}
-{!loading &&
+      {!loading &&
         !noData &&
         selectedMarker != null &&
         index !== -1 &&

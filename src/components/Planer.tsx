@@ -1,8 +1,8 @@
 import { useState, Fragment, useEffect } from "react";
-import { jsPDF } from "jspdf";
 import PropTypes from "prop-types";
 import "./../App.css";
 import { AttractionsData, useAppContext } from "../AppContext.tsx";
+import PlanerDescription from "./PlanerDescription.tsx";
 
 const DropArea = ({ onDrop }) => {
   const [showDrop, setShowDrop] = useState(false);
@@ -29,9 +29,8 @@ DropArea.propTypes = {
   onDrop: PropTypes.func.isRequired,
 };
 
-function Planer({
-}) {
-  const {addToPlaner, attractions} = useAppContext()
+function Planer({}) {
+  const { addToPlaner, attractions } = useAppContext();
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [tasks, setTasks] = useState<AttractionsData[]>([]);
   const [deleteTask, setDeleteTask] = useState<number | null>(null);
@@ -47,7 +46,6 @@ function Planer({
         if (alreadyAdded) return prevTasks;
         return [...prevTasks, attractions[addToPlaner]];
       });
-      console.log(`addToPlaner: ${addToPlaner}`);
     }
   }, [addToPlaner, attractions]);
 
@@ -73,29 +71,6 @@ function Planer({
     setTasks(updated);
     setActiveCard(null);
   };
-
-  function generatePDF(tasks) {
-    const doc = new jsPDF();
-    let y = 20;
-    const maxWidth = 180;
-
-    tasks.forEach((task, index) => {
-      const lines: string[] = [];
-      lines.push(`${index + 1}. ${task.name || "Brak nazwy"}`);
-      if (task.amenity) {
-        lines.push(`Amenity: ${task.amenity}`);
-      }
-      if (task.address) {
-        lines.push(`Address: ${task.address}`);
-      }
-      const text = lines.join("\n");
-      const wrapped = doc.splitTextToSize(text, maxWidth);
-      doc.text(wrapped, 10, y);
-      y += wrapped.length * 8 + 5;
-    });
-
-    doc.save("activity_plan.pdf");
-  }
 
   return (
     <div className="h-full">
@@ -138,11 +113,7 @@ function Planer({
           </ul>
         )}
       </div>
-      <img
-        className="absolute bottom-5 right-5 text-center text-black h-10"
-        src="/file-export-icon.svg"
-        onClick={() => generatePDF(tasks)}
-      ></img>
+      <PlanerDescription tasks={tasks} />
     </div>
   );
 }

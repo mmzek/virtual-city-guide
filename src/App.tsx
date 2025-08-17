@@ -10,22 +10,20 @@ import WeatherForecast from "./components/WeatherForecast.tsx";
 function App() {
   return (
     <AppContextProvider>
-        <div className="parent">
-      <MapView
-      />
-      <div className="sidebar_left flex flex-col overflow-auto flex-1">
-        <Planer />
-      </div>
-      <div className="sidebar flex flex-col overflow-auto flex-1">
-        <WeatherForecast/ >
-        <Attractions/
-        >
-      </div>
+      <div className="parent">
+        <MapView />
+        <div className="sidebar_left flex flex-col overflow-auto flex-1">
+          <Planer />
+        </div>
+        <div className="sidebar flex flex-col overflow-auto flex-1">
+          <WeatherForecast />
+          <Attractions />
+        </div>
 
-      <div className="child">
-        <SearchBar />
+        <div className="child">
+          <SearchBar />
+        </div>
       </div>
-    </div>
     </AppContextProvider>
   );
 }

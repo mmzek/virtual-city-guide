@@ -5,8 +5,8 @@ import "./MapView.jsx";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { useAppContext } from "../AppContext.js";
 
-function SearchBar({  }) {
-  const {setPosition} = useAppContext();
+function SearchBar({}) {
+  const { setPosition } = useAppContext();
   const loadingBarRef = useRef<LoadingBarRef>(null);
   const [query, setQuery] = useState("");
 
@@ -25,7 +25,6 @@ function SearchBar({  }) {
       if (data.features.length > 0) {
         const { lat, lon } = data.features[0].properties;
         setPosition([lat, lon]);
-        console.log("Found:", lat, lon);
       } else {
         alert("Loction not found");
       }
