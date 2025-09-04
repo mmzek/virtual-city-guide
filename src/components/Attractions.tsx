@@ -16,13 +16,14 @@ function formatApiText(apiText) {
     .join(" ");
 }
 
-function Attractions({}) {
-  const {position, selectedMarker, attractions, setSelectedMarker, setAddToPlaner, markers, setAttractions, setMarkers}=useAppContext();
+function Attractions({mobile}) {
+  const {position, selectedMarker, attractions, setSelectedMarker, setAddToPlaner, markers, setAttractions, setMarkers, showLeftSideBar, setShowLeftSideBar, setShowRightSideBar, tasks}=useAppContext();
   const [lat, lon] = position;
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
   const [index, setIndex] = useState<number | null>(null);
   const [showCategories, setShowCategories] = useState(false);
+  const [categoryName, setCategoryName] = useState("entertainment")
   const categories = [
     "entertainment",
     "catering",
@@ -33,9 +34,7 @@ function Attractions({}) {
     "leisure",
     "national_park",
   ];
-  let categoryName = "entertainment";
 
-  console.log(selectedMarker);
   function getBack() {
     setIndex(null);
     getAttractions();
@@ -47,7 +46,7 @@ function Attractions({}) {
   }
 
   function categoriesChosen(i) {
-    categoryName = categories[i];
+    setCategoryName( categories[i]);
     getAttractions();
   }
 
@@ -58,9 +57,9 @@ function Attractions({}) {
 
   const getAttractions = async () => {
     setLoading(true);
+    // @ts-ignore
      const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
     const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},3000&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`;
-    console.log(url);
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -105,10 +104,11 @@ function Attractions({}) {
       setIndex(i);
     }
   }, [selectedMarker, attractions]);
-
+  console.log(tasks)
   return (
     <div>
-      <h1 className="h">Tourist Attractions</h1>
+      {!mobile && <h1 className="py-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">Tourist Attractions</h1>}
+      {!loading && mobile && <h1 className="py-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">Tourist Attractions</h1>}
       {!loading &&
         !noData &&
         selectedMarker != null &&
@@ -154,7 +154,7 @@ function Attractions({}) {
           )}
           {attractions?.length == 0 && (
             <div className="font-sans p-10">
-              There are no attractions in selected category!
+              There are no attractions in category {formatApiText(categoryName)}!
             </div>
           )}
           <ul className="grid grid-cols-none gap-5 bg-clip-border p-8">
@@ -171,7 +171,7 @@ function Attractions({}) {
                   </div>{" "}
                 </div>
                 <img
-                  onClick={(e) =>{ e.stopPropagation(); setAddToPlaner(i);}}
+                  onClick={(e) =>{ e.stopPropagation(); setShowLeftSideBar(true); setAddToPlaner(i); if(mobile && tasks.length==0){setShowRightSideBar(false)}; if(mobile && tasks.length!==0){setShowLeftSideBar(false); setShowRightSideBar(true)};}}
                   src="/icons-plus.svg"
                   className="h-7"
                 ></img>
@@ -185,7 +185,7 @@ function Attractions({}) {
         selectedMarker != null &&
         index !== -1 &&
         index != null && (
-          <AttractionDetails attractions={attractions} index={index} />
+          <AttractionDetails attractions={attractions} index={index} mobile={mobile}/>
         )}{" "}
     </div>
   );

@@ -15,6 +15,7 @@ import { useAppContext } from "../AppContext.js";
 
 function SetViewOnLocation({ position}) {
   const map = useMap();
+  map.removeControl(map.zoomControl);
   var pinkIcon = L.icon({
     iconUrl: "/location.svg",
     iconSize: [38, 90],
@@ -32,7 +33,6 @@ function SetViewOnLocation({ position}) {
 
 function MapView({}) {
   const {position, markers, setSelectedMarker} = useAppContext()
-  console.log(markers);
   return (
     <MapContainer
       center={position as L.LatLngExpression}
