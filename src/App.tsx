@@ -63,14 +63,14 @@ function AppContent({}) {
           )}
           {/* mobile left sidebar*/}
           {mobile && (
-            <div className="w-full p-4 z-[1000] fixed top-0 left-0 h-screen">
-              <div className="absolute top-1/100 left-0 w-full h-98/100 z-1000 rounded-2xl border border-gray-300 shadow-gray-400 shadow-2xl bg-white overflow-auto">
+            <div className="w-full p-4 z-[1000] fixed top-0 right-0 h-screen">
+              <div className="absolute top-1/100 right-0 w-full h-98/100 z-1000 rounded-2xl border border-gray-300 shadow-gray-400 shadow-2xl bg-white overflow-auto">
                 <button
                   onClick={() => {
                     setShowRightSideBar(true);
                     setShowLeftSideBar(false);
                   }}
-                  className="absolute z-[1000] p-4"
+                  className="absolute z-[1000] p-4 right-0"
                 >
                   <img src="/back-arrow-icon.svg" className="h-5" />
                 </button>

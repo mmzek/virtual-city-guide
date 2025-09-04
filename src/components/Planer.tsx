@@ -128,12 +128,14 @@ ${places}
 
   return (
     <div className="h-full">
-      <LoadingBar color="pink" height={4} ref={loadingBarRef} />
-      <img
-        className="absolute z-[1000] h-15 ml-auto right-0 pt-7 px-20"
-        src="/file-export-icon.svg"
-        onClick={() => generatePDF(tasks)}
-      ></img>
+      <LoadingBar color="pink" height={4} ref={loadingBarRef} />{" "}
+      <div className="pt-5 px-15 absolute z-[1000] left-0">
+        <img
+          className="h-10"
+          src="/file-export-icon.svg"
+          onClick={() => generatePDF(tasks)}
+        ></img>
+      </div>
       <h1 className="w-full pt-5 inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">
         Activity plan
       </h1>
