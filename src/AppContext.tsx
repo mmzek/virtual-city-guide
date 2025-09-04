@@ -20,16 +20,25 @@ interface AppContextType {
   setAttractions: React.Dispatch<React.SetStateAction<AttractionsData[]>>;
   addToPlaner: any;
   setAddToPlaner: React.Dispatch<React.SetStateAction<any>>;
+  showLeftSideBar: boolean;
+  setShowLeftSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+  showRightSideBar: boolean;
+  setShowRightSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+  tasks: AttractionsData[];
+  setTasks: React.Dispatch<React.SetStateAction<AttractionsData[]>>;
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  const [position, setPosition] = useState([52.2297, 21.0122]);
+  const [position, setPosition] = useState([52.2319581, 21.0067249]);
   const [markers, setMarkers] = useState<any[]>([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [attractions, setAttractions] = useState<AttractionsData[]>([]);
   const [addToPlaner, setAddToPlaner] = useState(null);
+  const [showLeftSideBar, setShowLeftSideBar] = useState(false);
+  const [showRightSideBar, setShowRightSideBar] = useState(true);
+  const [tasks, setTasks] = useState<AttractionsData[]>([]);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -51,7 +60,10 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         markers, setMarkers,
         selectedMarker, setSelectedMarker,
         attractions, setAttractions,
-        addToPlaner, setAddToPlaner
+        addToPlaner, setAddToPlaner,
+        showLeftSideBar, setShowLeftSideBar,
+        showRightSideBar, setShowRightSideBar,
+        tasks, setTasks
       }}
     >
       {children}
