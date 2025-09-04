@@ -4,8 +4,8 @@ import "./MapView.jsx";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { useAppContext } from "../AppContext.js";
 
-function SearchBar({  }) {
-  const {setPosition} = useAppContext();
+function SearchBar({}) {
+  const { setPosition } = useAppContext();
   const loadingBarRef = useRef<LoadingBarRef>(null);
   const [query, setQuery] = useState("");
 
@@ -36,15 +36,16 @@ function SearchBar({  }) {
   };
   return (
     <div>
-            <LoadingBar color="pink" height={4} ref={loadingBarRef} />
-<header
-  className="font-sans text-5xl text-center text-white"
-  style={{
-    textShadow: "4px 4px 4px rgb(251, 150, 165), 0 0 30px rgb(250, 0, 0),-2px 0 lightpink, 0 2px lightpink, 2px 0 lightpink, 0 -2px lightpink"
-  }}
->
-  Virtual City Guide
-</header>
+      <LoadingBar color="pink" height={4} ref={loadingBarRef} />
+      <header
+        className="font-sans text-5xl text-center text-white"
+        style={{
+          textShadow:
+            "4px 4px 4px rgb(251, 150, 165), 0 0 30px rgb(250, 0, 0),-2px 0 lightpink, 0 2px lightpink, 2px 0 lightpink, 0 -2px lightpink",
+        }}
+      >
+        Virtual City Guide
+      </header>
       <form className="pt-5 w-full flex items-center justify-center">
         <div className="bg-white w-100 h-10 z-[1000] outline-(--color-light-pink) outline-2 rounded-3xl  shadow-[5px_5px_5px_var(--color-light-pink)] flex items-center px-1">
           <input
@@ -53,7 +54,10 @@ function SearchBar({  }) {
             className="font-sans bg-transparent text-black placeholder-[var(--color-light-pink)] font-medium outline-none p-2 px-4"
             placeholder="Search location..."
           />
-        <button className="p-1 ml-auto hover:bg-[#fb96a5] w-25 bg-(--color-light-pink) text-white rounded-4xl" onClick={handleSearch}>
+          <button
+            className="p-1 ml-auto hover:bg-[#fb96a5] w-25 bg-(--color-light-pink) text-white rounded-4xl"
+            onClick={handleSearch}
+          >
             Search
           </button>
         </div>

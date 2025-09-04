@@ -12,8 +12,7 @@ import "./Attractions.jsx";
 import * as L from "leaflet";
 import { useAppContext } from "../AppContext.js";
 
-
-function SetViewOnLocation({ position}) {
+function SetViewOnLocation({ position }) {
   const map = useMap();
   map.removeControl(map.zoomControl);
   var pinkIcon = L.icon({
@@ -32,7 +31,7 @@ function SetViewOnLocation({ position}) {
 }
 
 function MapView({}) {
-  const {position, markers, setSelectedMarker} = useAppContext()
+  const { position, markers, setSelectedMarker } = useAppContext();
   return (
     <MapContainer
       center={position as L.LatLngExpression}

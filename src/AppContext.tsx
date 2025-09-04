@@ -1,12 +1,18 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 export interface AttractionsData {
- name: string | null; 
- attractionLon: number; 
- attractionLat: number; 
- amenity: string | null; 
- address: string; 
- url: string | null; 
+  name: string | null;
+  attractionLon: number;
+  attractionLat: number;
+  amenity: string | null;
+  address: string;
+  url: string | null;
 }
 
 interface AppContextType {
@@ -28,7 +34,7 @@ interface AppContextType {
   setTasks: React.Dispatch<React.SetStateAction<AttractionsData[]>>;
 }
 
-export const AppContext = createContext<AppContextType | undefined>(undefined)
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [position, setPosition] = useState([52.2319581, 21.0067249]);
@@ -56,14 +62,22 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AppContext.Provider
       value={{
-        position, setPosition,
-        markers, setMarkers,
-        selectedMarker, setSelectedMarker,
-        attractions, setAttractions,
-        addToPlaner, setAddToPlaner,
-        showLeftSideBar, setShowLeftSideBar,
-        showRightSideBar, setShowRightSideBar,
-        tasks, setTasks
+        position,
+        setPosition,
+        markers,
+        setMarkers,
+        selectedMarker,
+        setSelectedMarker,
+        attractions,
+        setAttractions,
+        addToPlaner,
+        setAddToPlaner,
+        showLeftSideBar,
+        setShowLeftSideBar,
+        showRightSideBar,
+        setShowRightSideBar,
+        tasks,
+        setTasks,
       }}
     >
       {children}
@@ -71,10 +85,10 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export function useAppContext(){
-  const appContext = useContext(AppContext)
-  if(appContext === undefined){
+export function useAppContext() {
+  const appContext = useContext(AppContext);
+  if (appContext === undefined) {
     throw Error("user is undefined");
   }
-  return appContext
+  return appContext;
 }

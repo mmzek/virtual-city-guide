@@ -15,8 +15,8 @@ interface WeatherData {
   description: string;
 }
 
-function WeatherForecast({  }) {
-  const {position }= useAppContext();
+function WeatherForecast({}) {
+  const { position } = useAppContext();
   const [lat, lon] = position;
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -68,41 +68,53 @@ function WeatherForecast({  }) {
 
   return (
     <div>
-      <h1 className="pt-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">Weather</h1>
+      <h1 className="pt-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">
+        Weather
+      </h1>
       {loading && <div className="loader"></div>}
       {noData && (
         <div className="nodata">
           Weather is unavailable for the specified location
         </div>
       )}
-      {!loading && !noData && weather && (<div>
-        <div className="flex justify-center w-full">
-          <div className="flex items-center w-80">
-              <h2 className="font-sans text-5xl text-(--color-light-pink) font-bold">{weather.temp}</h2>
-              <img className="mx-auto" src={weather.iconUrl ?? ""} alt="weather icon" />
-               <h2 className="font-sans text-xl text-(--color-light-pink) font-bold">{weather.description}</h2>
-              </div>
-              </div>
+      {!loading && !noData && weather && (
+        <div>
+          <div className="flex justify-center w-full">
+            <div className="flex items-center w-80">
+              <h2 className="font-sans text-5xl text-(--color-light-pink) font-bold">
+                {weather.temp}
+              </h2>
+              <img
+                className="mx-auto"
+                src={weather.iconUrl ?? ""}
+                alt="weather icon"
+              />
+              <h2 className="font-sans text-xl text-(--color-light-pink) font-bold">
+                {weather.description}
+              </h2>
+            </div>
+          </div>
 
-               <h3 className="font-sans center text-center font-bold pb-4">{weather.time}</h3>
+          <h3 className="font-sans center text-center font-bold pb-4">
+            {weather.time}
+          </h3>
 
-<div className="flex justify-center w-full">
-  <div className="grid grid-cols-2">
-          <div className="grid grid-rows-2 text-center">
-              <h2 className="font-sans font-bold">{weather.wind}</h2>
-               <h2 className="font-sans font-bold">{weather.humidity}</h2>
+          <div className="flex justify-center w-full">
+            <div className="grid grid-cols-2">
+              <div className="grid grid-rows-2 text-center">
+                <h2 className="font-sans font-bold">{weather.wind}</h2>
+                <h2 className="font-sans font-bold">{weather.humidity}</h2>
               </div>
-               <div className="grid grid-rows-2 text-center pl-4">
-              <h2 className="font-sans font-bold">{weather.pressure}</h2>
-               <h2 className="font-sans font-bold">{weather.cloudCover}</h2>
+              <div className="grid grid-rows-2 text-center pl-4">
+                <h2 className="font-sans font-bold">{weather.pressure}</h2>
+                <h2 className="font-sans font-bold">{weather.cloudCover}</h2>
               </div>
-              </div>
-       </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 }
-
 
 export default WeatherForecast;

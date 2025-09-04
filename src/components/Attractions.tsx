@@ -16,14 +16,27 @@ function formatApiText(apiText) {
     .join(" ");
 }
 
-function Attractions({mobile}) {
-  const {position, selectedMarker, attractions, setSelectedMarker, setAddToPlaner, markers, setAttractions, setMarkers, showLeftSideBar, setShowLeftSideBar, setShowRightSideBar, tasks}=useAppContext();
+function Attractions({ mobile }) {
+  const {
+    position,
+    selectedMarker,
+    attractions,
+    setSelectedMarker,
+    setAddToPlaner,
+    markers,
+    setAttractions,
+    setMarkers,
+    showLeftSideBar,
+    setShowLeftSideBar,
+    setShowRightSideBar,
+    tasks,
+  } = useAppContext();
   const [lat, lon] = position;
   const [loading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
   const [index, setIndex] = useState<number | null>(null);
   const [showCategories, setShowCategories] = useState(false);
-  const [categoryName, setCategoryName] = useState("entertainment")
+  const [categoryName, setCategoryName] = useState("entertainment");
   const categories = [
     "entertainment",
     "catering",
@@ -38,7 +51,7 @@ function Attractions({mobile}) {
   function getBack() {
     setIndex(null);
     getAttractions();
-    setSelectedMarker(null)
+    setSelectedMarker(null);
   }
 
   function categoriesButtonClicked() {
@@ -46,7 +59,7 @@ function Attractions({mobile}) {
   }
 
   function categoriesChosen(i) {
-    setCategoryName( categories[i]);
+    setCategoryName(categories[i]);
     getAttractions();
   }
 
@@ -58,7 +71,7 @@ function Attractions({mobile}) {
   const getAttractions = async () => {
     setLoading(true);
     // @ts-ignore
-     const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
+    const apiKey = import.meta.env.VITE_GEOPIFY_KEY as string;
     const url = `https://api.geoapify.com/v2/places?categories=${categoryName}&filter=circle:${lon},${lat},3000&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`;
     try {
       const response = await fetch(url);
@@ -104,11 +117,19 @@ function Attractions({mobile}) {
       setIndex(i);
     }
   }, [selectedMarker, attractions]);
-  console.log(tasks)
+  console.log(tasks);
   return (
     <div>
-      {!mobile && <h1 className="py-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">Tourist Attractions</h1>}
-      {!loading && mobile && <h1 className="py-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">Tourist Attractions</h1>}
+      {!mobile && (
+        <h1 className="py-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">
+          Tourist Attractions
+        </h1>
+      )}
+      {!loading && mobile && (
+        <h1 className="py-5 w-full inline-block text-center font-sans text-4xl text-(--color-light-pink) font-bold">
+          Tourist Attractions
+        </h1>
+      )}
       {!loading &&
         !noData &&
         selectedMarker != null &&
@@ -154,7 +175,8 @@ function Attractions({mobile}) {
           )}
           {attractions?.length == 0 && (
             <div className="font-sans p-10">
-              There are no attractions in category {formatApiText(categoryName)}!
+              There are no attractions in category {formatApiText(categoryName)}
+              !
             </div>
           )}
           <ul className="grid grid-cols-none gap-5 bg-clip-border p-8">
@@ -171,7 +193,18 @@ function Attractions({mobile}) {
                   </div>{" "}
                 </div>
                 <img
-                  onClick={(e) =>{ e.stopPropagation(); setShowLeftSideBar(true); setAddToPlaner(i); if(mobile && tasks.length==0){setShowRightSideBar(false)}; if(mobile && tasks.length!==0){setShowLeftSideBar(false); setShowRightSideBar(true)};}}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowLeftSideBar(true);
+                    setAddToPlaner(i);
+                    if (mobile && tasks.length == 0) {
+                      setShowRightSideBar(false);
+                    }
+                    if (mobile && tasks.length !== 0) {
+                      setShowLeftSideBar(false);
+                      setShowRightSideBar(true);
+                    }
+                  }}
                   src="/icons-plus.svg"
                   className="h-7"
                 ></img>
@@ -180,12 +213,16 @@ function Attractions({mobile}) {
           </ul>{" "}
         </div>
       )}
-{!loading &&
+      {!loading &&
         !noData &&
         selectedMarker != null &&
         index !== -1 &&
         index != null && (
-          <AttractionDetails attractions={attractions} index={index} mobile={mobile}/>
+          <AttractionDetails
+            attractions={attractions}
+            index={index}
+            mobile={mobile}
+          />
         )}{" "}
     </div>
   );
